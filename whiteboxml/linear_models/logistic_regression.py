@@ -1,4 +1,4 @@
-# whiteboxml/linear_models/logistic_regression.py
+﻿# whiteboxml/linear_models/logistic_regression.py
 
 import numpy as np
 from whiteboxml.base_model import BaseModel
@@ -29,7 +29,7 @@ class LogisticRegression(BaseModel):
             w -= self.lr * dw
             b -= self.lr * db
 
-        # ?? Guardamos en el formato est�ndar
+        # 🔥 Guardamos en el formato estándar
         self.params["weights"] = w.tolist()
         self.params["bias"] = b
 
