@@ -1,10 +1,12 @@
 # whiteboxml/linear_models/logistic_regression.py
 
 import numpy as np
+from whiteboxml.base_model import BaseModel
 
 
-class LogisticRegression:
+class LogisticRegression(BaseModel):
     def __init__(self, lr=0.01, n_iter=1000):
+        super().__init__()
         self.lr = lr
         self.n_iter = n_iter
 
@@ -14,20 +16,31 @@ class LogisticRegression:
     def fit(self, X, y):
         n_samples, n_features = X.shape
 
-        self.w = np.zeros(n_features)
-        self.b = 0
+        w = np.zeros(n_features)
+        b = 0
 
         for _ in range(self.n_iter):
-            z = np.dot(X, self.w) + self.b
+            z = np.dot(X, w) + b
             y_pred = self._sigmoid(z)
 
             dw = (1 / n_samples) * np.dot(X.T, (y_pred - y))
             db = (1 / n_samples) * np.sum(y_pred - y)
 
-            self.w -= self.lr * dw
-            self.b -= self.lr * db
+            w -= self.lr * dw
+            b -= self.lr * db
+
+        # ?? Guardamos en el formato estándar
+        self.params["weights"] = w.tolist()
+        self.params["bias"] = b
 
     def predict(self, X):
-        z = np.dot(X, self.w) + self.b
+        if not self.params:
+            raise Exception("El modelo debe entrenarse antes de predecir.")
+
+        w = np.array(self.params["weights"])
+        b = self.params["bias"]
+
+        z = np.dot(X, w) + b
         y_pred = self._sigmoid(z)
+
         return (y_pred >= 0.5).astype(int)
