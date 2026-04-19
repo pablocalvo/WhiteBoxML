@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import json
 
 
-class BaseModel(ABC):
+class BaseLinearModel(ABC):
     def __init__(self):
         self.params = {}
 
