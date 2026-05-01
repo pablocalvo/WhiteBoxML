@@ -1,44 +1,95 @@
+from __future__ import annotations
 import numpy as np
-from whiteboxml.base_model import BaseModel
+from typing import Tuple
+from whiteboxml.base_linear_model import BaseLinearModel
 
 
-class LinearRegression(BaseModel):
-    def __init__(self, lr=0.01, n_iter=3):
+class LinearRegression(BaseLinearModel):
+    """
+    Implementaci贸n de regresi贸n lineal usando descenso por gradiente.
+    """
+
+    def __init__(self, lr: float = 0.01, n_iter: int = 1000) -> None:
+        """
+        Inicializa el modelo.
+
+        :param lr: Learning rate.
+        :param n_iter: N煤mero de iteraciones.
+        :return: None
+        :authors: Pablo
+        :date: 2026-04-19
+        """
         super().__init__()
         self.lr = lr
         self.n_iter = n_iter
 
-    def fit(self, X, y):
+    def fit(self, X: np.ndarray, y: np.ndarray) -> None:
+        """
+        Entrena el modelo usando descenso por gradiente.
+
+        :param X: Matriz de caracter铆sticas.
+        :param y: Vector de etiquetas.
+        :return: None
+        :authors: Pablo
+        :date: 2026-04-19
+        """
         n_samples, n_features = X.shape
 
-        # Inicializaci髇
-        w = np.zeros(n_features)
-        b = 0
-        h = 10
+        self.weights = np.zeros(n_features)
+        self.bias = 0.0
 
-        # Descenso de gradiente
-        for _ in range(self.n_iter):
-            y_pred = np.dot(X, w) + b
-            
-            
-            # Gradientes
-            dw = (1 / n_samples) * np.dot(X.T, (y_pred - y))
-            db = (1 / n_samples) * np.sum(y_pred - y)
+        self.gradient_descent(X, y, self.lr, self.n_iter)
 
-            # Actualizaci髇
-            w -= self.lr * dw
-            b -= self.lr * db
-            h -= 1
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        """
+        Realiza predicciones.
 
-        # Guardamos par醡etros en el formato est醤dar
-        self.params["weights"] = w.tolist()
-        self.params["bias"] = b
+        :param X: Matriz de caracter铆sticas.
+        :return: Vector de predicciones.
+        :authors: Pablo
+        :date: 2026-04-19
+        """
+        if self.weights is None or self.bias is None:
+            raise ValueError("El modelo debe entrenarse antes de predecir.")
 
-    def predict(self, X):
-        if not self.params:
-            raise Exception("El modelo debe entrenarse antes de predecir.")
+        return np.dot(X, self.weights) + self.bias
 
-        w = np.array(self.params["weights"])
-        b = self.params["bias"]
+    def compute_gradient(
+        self, X: np.ndarray, y: np.ndarray
+    ) -> Tuple[np.ndarray, float]:
+        """
+        Calcula el gradiente de la funci贸n de costo (MSE).
 
-        return np.dot(X, w) + b
+        :param X: Matriz de caracter铆sticas.
+        :param y: Vector de etiquetas.
+        :return: Gradientes (dw, db).
+        :authors: Pablo
+        :date: 2026-04-19
+        """
+        n_samples = X.shape[0]
+
+        y_pred = np.dot(X, self.weights) + self.bias
+
+        dw = (1 / n_samples) * np.dot(X.T, (y_pred - y))
+        db = (1 / n_samples) * np.sum(y_pred - y)
+
+        return dw, db
+
+    def compute_hessian(
+        self, X: np.ndarray, y: np.ndarray
+    ) -> np.ndarray:
+        """
+        Calcula el hessiano de la funci贸n de costo (MSE).
+
+        :param X: Matriz de caracter铆sticas.
+        :param y: Vector de etiquetas.
+        :return: Matriz Hessiana.
+        :authors: Cristian
+        :date: 2026-04-19
+        """
+        n_samples = X.shape[0]
+
+        # Hessiano para regresi贸n lineal
+        H = (1 / n_samples) * np.dot(X.T, X)
+
+        return H

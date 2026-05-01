@@ -4,6 +4,20 @@ import numpy as np
 
 
 class ModelReporting:
+    """
+    Clase encargada de la evaluación y reporte de modelos.
+
+    Proporciona métodos para analizar el rendimiento de un modelo,
+    permitiendo calcular métricas y generar salidas interpretables
+    a partir de las predicciones.
+
+    Esta clase sirve como apoyo para validar y comparar modelos
+    dentro del proyecto.
+
+    :authors: Carla, Cristian, Mati, Pablo
+    :date: 2026-04-19
+    """
+
     def __init__(self, X_test, y_test):
         self.X_test = X_test
         self.y_test = y_test
