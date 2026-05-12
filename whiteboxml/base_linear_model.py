@@ -158,7 +158,7 @@ class BaseLinearModel(ABC):
 
         n_samples = X.shape[0]
 
-        # 🔥 Agregamos columna de 1s para el bias
+        # Agregamos columna de 1s para el bias
         X_ext = np.hstack([X, np.ones((n_samples, 1))])
 
         # Vector completo de parámetros
